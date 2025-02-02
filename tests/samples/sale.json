@@ -1,53 +1,18 @@
-[
-  {
-    "event_uuid": "12345-abcde",
-    "event_ts": 1675325138,
-    "event_type": "typeA",
-    "occurred_ts": 1675324138,
-    "channel": "tv",
-    "request_origin": "web-api",
-    "payload": {
-      "brand": "TVOne",
-      "sub_brand": "Channel 5",
-      "campaign_name": "Summer Vibes",
-      "start_date": "2024-06-15T08:00:00Z",
-      "ad_duration": 30,
-      "spot_type": "prime-time"
-    },
-    "prev_payload": null
+{
+  "event_uuid": "123e4567-e89b-12d3-a456-426614174000",
+  "event_ts": 1706870400,
+  "event_type": "sale_event",
+  "occurred_ts": 1706870500,
+  "channel": "sale",
+  "request_origin": "data-api",
+  "payload": {
+    "start_date": "2024-02-02T12:00:00",
+    "brand": "BrandX",
+    "sub_brand": "SubBrandY",
+    "campaign_name": "Winter Sales Campaign",
+    "sale_amount": 1500.75,
+    "currency": "USD",
+    "mmm_model": "MMM_V1"
   },
-  {
-    "event_uuid": "67890-fghij",
-    "event_ts": 1675326238,
-    "event_type": "typeB",
-    "occurred_ts": 1675325238,
-    "channel": "tv",
-    "request_origin": "mobile-app",
-    "payload": {
-      "brand": "SuperTV",
-      "sub_brand": "Entertainment HD",
-      "campaign_name": "Movie Premiere Night",
-      "start_date": "2024-07-01T19:30:00Z",
-      "ad_duration": 45,
-      "spot_type": "regular"
-    },
-    "prev_payload": null
-  },
-  {
-    "event_uuid": "98765-klmno",
-    "event_ts": 1675327338,
-    "event_type": "typeC",
-    "occurred_ts": 1675326338,
-    "channel": "tv",
-    "request_origin": "desktop-web",
-    "payload": {
-      "brand": "News24",
-      "sub_brand": "Global Reports",
-      "campaign_name": "Breaking News Special",
-      "start_date": "2024-06-20T06:00:00Z",
-      "ad_duration": 20,
-      "spot_type": "breaking-news"
-    },
-    "prev_payload": null
-  }
-]
+  "prev_payload": null
+}

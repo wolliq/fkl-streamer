@@ -58,3 +58,14 @@ kafka-consume-media-tv-test:
     kafka-console-consumer --bootstrap-server localhost:9092 --topic media-tv-test
 kafka-consume-sale-test:
     kafka-console-consumer --bootstrap-server localhost:9092 --topic sale-test
+
+build:
+    docker build --no-cache -t fastapi-app .
+run:
+    docker run --env-file .envrc_docker -p 8000:8000 fastapi-app
+run-it:
+    docker run -it fastapi-app /bin/sh
+run-docker-compose:
+    docker compose up --build
+log-fastapi:
+    docker logs fastapi-app

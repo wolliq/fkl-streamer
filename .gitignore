@@ -46,3 +46,9 @@ build/
 *.ini
 *.cfg
 *.toml
+
+# ingore data files
+*.parquet
+
+./lakehouse/*
+/lakehouse/

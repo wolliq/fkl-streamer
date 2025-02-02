@@ -1,2 +1,0 @@
-class MediaProcessService:
-    pass

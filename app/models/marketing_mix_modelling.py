@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, field_serializer
 
-from models.currency import Currency
+from app.models import Currency
 
 
 class MarketingMixModelling(BaseModel):

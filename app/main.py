@@ -7,7 +7,7 @@ from faststream.confluent.config import ConfluentConfig
 
 from app.constants import KAFKA_CONFIG, KAFKA_BROKERS, SECURITY
 from app.service.routers import router_media_radio, router_media_tv, router_sale
-from services.media_service import MediaProcessService
+
 
 logging.basicConfig(
     format="{asctime} - {levelname} - {message}",
@@ -40,13 +40,13 @@ broker.include_routers(router_media_radio, router_media_tv, router_sale)
 class MediaProcessApp(FastAPI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.media_processor_service: MediaProcessService = None
+        # self.media_processor_service: MediaProcessService = None
 
 
 @asynccontextmanager
 async def lifespan(_app: MediaProcessApp):
     await broker.start()
-    _app.media_processor_service = MediaProcessService()
+    # _app.media_processor_service = MediaProcessService()
 
     yield
 

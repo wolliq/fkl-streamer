@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, field_serializer
 
-from models import MediaBaseEnvelopeWrapper, MediaBaseModelLakehouse
+from app.models import MediaBaseEnvelopeWrapper, MediaBaseModelLakehouse
 
 
 class MediaChannelRadio(BaseModel):

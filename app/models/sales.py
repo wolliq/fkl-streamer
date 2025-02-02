@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, field_serializer
 
-from models import SaleBaseModelLakehouse, SaleBaseEnvelopeWrapper
+from app.models import SaleBaseModelLakehouse, SaleBaseEnvelopeWrapper
 
 
 class Sale(BaseModel):
@@ -14,7 +14,7 @@ class Sale(BaseModel):
     brand: str
     sub_brand: str
     campaign_name: str
-    cost: float
+    sale_amount: float
     currency: str
     mmm_model: str
 

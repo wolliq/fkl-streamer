@@ -4,9 +4,9 @@ import polars as pl
 from faststream.confluent import KafkaRouter, KafkaRoute
 
 from app.constants import TOPIC_MEDIA_RADIO, TOPIC_MEDIA_TV, TOPIC_SALE
-from models.media_channel_tv import MediaChannelTvEnvelope
-from models.sales import SaleEnvelope
-from models.media_channel_radio import MediaChannelRadioEnvelope
+from app.models.media_channel_radio import MediaChannelRadioEnvelope
+from app.models.media_channel_tv import MediaChannelTvEnvelope
+from app.models.sales import SaleEnvelope
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ async def handle_sale_event(event: SaleEnvelope):
 router_sale = KafkaRouter(
     handlers=(
         KafkaRoute(
-            handle_media_tv_event,
+            handle_sale_event,
             TOPIC_SALE,
         ),
     )
