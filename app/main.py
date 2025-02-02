@@ -1,9 +1,13 @@
 import logging
+from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from faststream.confluent import KafkaBroker
 from faststream.confluent.config import ConfluentConfig
 
-from models.media_channel_tv import MediaChannelTvEnvelope
-from models.sales import SaleEnvelope
+from app.constants import KAFKA_CONFIG, KAFKA_BROKERS, SECURITY
+from app.service.routers import router_media_radio, router_media_tv, router_sale
+from services.media_service import MediaProcessService
 
 logging.basicConfig(
     format="{asctime} - {levelname} - {message}",
@@ -14,135 +18,11 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-import ssl
-from contextlib import asynccontextmanager
-from os import environ
-
-from fastapi import FastAPI
-from faststream.security import SASLPlaintext
-
-from models.media_channel_radio import MediaChannelRadioEnvelope
-from services.media_service import MediaProcessService
-
-import polars as pl
-
-
-from faststream.confluent import KafkaBroker, KafkaRouter, KafkaRoute
-
-
-def strtobool(val: str) -> bool:
-    val = val.lower()
-    if val in ("y", "yes", "true", "t", "on", "1"):
-        return True
-    elif val in ("n", "no", "false", "f", "off", "0"):
-        return False
-    else:
-        raise ValueError(f"Invalid truth value: {val}")
-
-
-KAFKA_BROKERS = environ.get("KAFKA_BROKERS")
-KAFKA_SASL_AUTH_ENABLED = strtobool(environ.get("KAFKA_SASL_AUTH_ENABLED", "True"))
-KAFKA_SASL_USER = environ.get("KAFKA_SASL_USER")
-KAFKA_SASL_PASSWORD = environ.get("KAFKA_SASL_PASSWORD")
-
-ssl_context = ssl.create_default_context()
-security = None
-if KAFKA_SASL_AUTH_ENABLED:
-    security = SASLPlaintext(
-        username=KAFKA_SASL_USER, password=KAFKA_SASL_PASSWORD, use_ssl=True
-    )
-
-kafka_config = {
-        "api.version.request": "true",
-        "broker.version.fallback": "0.10.0.0",
-        "api.version.fallback.ms": 0,
-        "client.id": "media-channels-client",
-        "group.id": "media-channels-group",
-        "auto.offset.reset": "earliest",
-    }
 
 broker = KafkaBroker(
     bootstrap_servers=KAFKA_BROKERS,
-    security=security,
-    config=ConfluentConfig(kafka_config)
-)
-
-TOPIC_MEDIA_RADIO = "media-radio-test"
-TOPIC_MEDIA_TV = "media-tv-test"
-TOPIC_SALE = "sale-test"
-
-async def handle_media_radio_event(event: MediaChannelRadioEnvelope):
-    logger.info(event)
-    df = pl.from_dict(event.model_dump())
-    df = df.with_columns(pl.all().fill_null("NULL"))
-    print(event)
-    logger.info(df)
-    table_path = "lakehouse/bronze/media_radio"
-    (
-        df.write_delta(
-            target=table_path,
-            mode="append",
-        )
-    )
-    logger.info("Delta lake written: media_radio table")
-
-router_media_radio = KafkaRouter(
-    handlers=(
-        KafkaRoute(
-            handle_media_radio_event,
-            TOPIC_MEDIA_RADIO,
-        ),
-    )
-)
-
-async def handle_media_tv_event(event: MediaChannelTvEnvelope):
-    logger.info(event)
-    df = pl.from_dict(event.model_dump())
-    df = df.with_columns(pl.all().fill_null("NULL"))
-    print(event)
-    logger.info(df)
-    table_path = "lakehouse/bronze/media_tv"
-    (
-        df.write_delta(
-            target=table_path,
-            mode="append",
-        )
-    )
-    logger.info("Delta lake written: media_tv table")
-
-router_media_tv = KafkaRouter(
-    handlers=(
-        KafkaRoute(
-            handle_media_tv_event,
-            TOPIC_MEDIA_TV,
-        ),
-    )
-)
-
-
-async def handle_sale_event(event: SaleEnvelope):
-    logger.info(event)
-    df = pl.from_dict(event.model_dump())
-    df = df.with_columns(pl.all().fill_null("NULL"))
-    print(event)
-    logger.info(df)
-    table_path = "lakehouse/bronze/sale"
-    (
-        df.write_delta(
-            target=table_path,
-            mode="append",
-        )
-    )
-    logger.info("Delta lake written: sale table")
-
-
-router_sale = KafkaRouter(
-    handlers=(
-        KafkaRoute(
-            handle_media_tv_event,
-            TOPIC_MEDIA_TV,
-        ),
-    )
+    security=SECURITY,
+    config=ConfluentConfig(KAFKA_CONFIG),
 )
 
 broker.include_routers(router_media_radio, router_media_tv, router_sale)

@@ -32,10 +32,20 @@ kafka-add-topics:
 # Produce media channel radio test sample
 kafka-produce-media-radio:
     jq -rc . tests/samples/media_channel_radio.json | kafka-console-producer --bootstrap-server localhost:9092 --topic media-radio-test
+kafka-produce-media-radio-10:
+    for i in {1..10}; do just kafka-produce-media-radio; done
 
 # Produce media channel tv test sample
 kafka-produce-media-tv:
     jq -rc . tests/samples/media_channel_tv.json | kafka-console-producer --bootstrap-server localhost:9092 --topic media-tv-test
+kafka-produce-media-tv-10:
+    for i in {1..10}; do just kafka-produce-media-tv; done
+
+# Produce sale test sample
+kafka-produce-sale:
+    jq -rc . tests/samples/sale.json | kafka-console-producer --bootstrap-server localhost:9092 --topic sale-test
+kafka-produce-sale-10:
+    for i in {1..10}; do just kafka-produce-sale; done
 
 # Run the FastAPI app locally
 run-locally:
@@ -44,3 +54,7 @@ run-locally:
 # Use the local installed binary to check consumer activity
 kafka-consume-media-radio-test:
     kafka-console-consumer --bootstrap-server localhost:9092 --topic media-radio-test
+kafka-consume-media-tv-test:
+    kafka-console-consumer --bootstrap-server localhost:9092 --topic media-tv-test
+kafka-consume-sale-test:
+    kafka-console-consumer --bootstrap-server localhost:9092 --topic sale-test

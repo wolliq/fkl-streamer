@@ -1,0 +1,10 @@
+# define applicative config properties
+
+kafka-topics:
+  - media_radio_test
+  - media_tv_test
+  - sale_test
+
+lakehouse:
+  - location:
+      - 
