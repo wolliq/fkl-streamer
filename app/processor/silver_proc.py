@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 logging.basicConfig(
     format="{asctime} - {levelname} - {message}",
@@ -18,6 +19,9 @@ pl.Config.set_fmt_str_lengths = 1000
 pl.Config.set_tbl_width_chars = 1000
 pl.Config.tbl_width_chars = 1000
 
+def get_project_root() -> Path:
+    return Path(__file__).resolve().parent.parent.parent
+
 # join_key_date = pl.date(2025, 1, 27)
 join_key_monday_date = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
 print(join_key_monday_date)
@@ -29,8 +33,8 @@ delta_write_options = {"partition_by": "monday_of_week"}
 if WRITE_SILVER:
     # BRONZE has a flatten schema now
     # Prepare refined data model on SILVER
-    source_path="../../lakehouse/bronze/media_tv"
-    dest_path = "../../lakehouse/silver/media_tv"
+    source_path=f"{get_project_root()}/lakehouse/bronze/media_tv"
+    dest_path = f"{get_project_root()}/lakehouse/silver/media_tv"
 
 
     (
@@ -47,11 +51,11 @@ if WRITE_SILVER:
         target=dest_path, mode="overwrite", delta_write_options=delta_write_options
     )
 
-    source_path="../../lakehouse/bronze/media_radio"
-    dest_path = "../../lakehouse/silver/media_radio"
+    source_path=f"{get_project_root()}/lakehouse/bronze/media_radio"
+    dest_path = f"{get_project_root()}/lakehouse/silver/media_radio"
 
     (
-        pl.read_delta("../../lakehouse/bronze/media_radio")
+        pl.read_delta(f"{get_project_root()}/lakehouse/bronze/media_radio")
         .filter(pl.col("monday_of_week") == join_key_monday_date)
         .rename({"payload.cost": "cost_radio"})
         .rename({"payload.brand": "brand"})
@@ -64,8 +68,8 @@ if WRITE_SILVER:
         target=dest_path, mode="overwrite", delta_write_options=delta_write_options
     )
 
-    source_path="../../lakehouse/bronze/sale"
-    dest_path = "../../lakehouse/silver/sale"
+    source_path=f"{get_project_root()}/lakehouse/bronze/sale"
+    dest_path = f"{get_project_root()}/lakehouse/silver/sale"
 
     (
         pl.read_delta(source_path)
@@ -85,13 +89,13 @@ else:
     logger.info("Skipping silver write.")
 
 # Read SILVER and aggregate to GOLD
-silver_media_radio = (pl.read_delta("../../lakehouse/silver/media_radio")
+silver_media_radio = (pl.read_delta(f"{get_project_root()}/lakehouse/silver/media_radio")
                       .filter(pl.col("monday_of_week") == join_key_monday_date))
 
-silver_media_tv = (pl.read_delta("../../lakehouse/silver/media_tv")
+silver_media_tv = (pl.read_delta(f"{get_project_root()}/lakehouse/silver/media_tv")
                    .filter(pl.col("monday_of_week") == join_key_monday_date))
 
-silver_sale = (pl.read_delta("../../lakehouse/silver/sale")
+silver_sale = (pl.read_delta(f"{get_project_root()}/lakehouse/silver/sale")
                    .filter(pl.col("monday_of_week") == join_key_monday_date))
 
 # logger.info(silver_media_radio.select("payload.cost_radio"))
@@ -118,7 +122,7 @@ joined_media_sale = (
         .join(agg_silver_sale, on=["monday_of_week", "brand"])
 )
 
-dest_path = "../../lakehouse/gold/report_model"
+dest_path = f"{get_project_root()}/lakehouse/gold/report_model"
 (
     joined_media_sale
         .select("monday_of_week", "brand", "sub_brand", "campaign_name", "channel", "sum_cost_radio", "sum_cost_tv", "sum_sale_amount", "mmm_model")
@@ -128,6 +132,6 @@ dest_path = "../../lakehouse/gold/report_model"
 )
 
 logger.info(
-    pl.read_delta("../../lakehouse/gold/report_model")
+    pl.read_delta(f"{get_project_root()}/lakehouse/gold/report_model")
         .filter(pl.col("monday_of_week") == join_key_monday_date)
 )
