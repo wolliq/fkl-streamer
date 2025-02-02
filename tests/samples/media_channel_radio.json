@@ -6,10 +6,12 @@
     "channel": "tv",
     "request_origin": "web-api",
     "payload": {
-      "brand": "RadioOne",
+      "brand": "MediaOne",
       "sub_brand": "FM 101",
       "campaign_name": "Summer Vibes",
-      "start_date": "2024-06-15T08:00:00Z"
+      "start_date": "2024-06-15T08:00:00Z",
+      "cost": 250.00,
+      "currency": "EUR"
     },
     "prev_payload": null
 }

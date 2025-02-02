@@ -14,19 +14,25 @@ logger = logging.getLogger(__name__)
 
 async def handle_media_radio_event(event: MediaChannelRadioEnvelope):
     logger.info(event)
-    df = pl.from_dict(event.model_dump())
+    data = event.flatten(event.model_dump())
+    df = pl.DataFrame(data)
     df = df.with_columns(pl.all().fill_null("NULL"))
 
     df = df.with_columns(
         occurred_date=pl.from_epoch(
             pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
         ).cast(pl.Date)
+    ).with_columns(
+        monday_of_week=pl.col("occurred_date").map_elements(
+            lambda dt: dt - datetime.timedelta(days=dt.weekday()), return_dtype=pl.Date
+        )
     )
 
     logger.info(df.head())
+
     table_path = "lakehouse/bronze/media_radio"
 
-    delta_write_options = {"partition_by": "occurred_date"}
+    delta_write_options = {"partition_by": "monday_of_week"}
     df.write_delta(
         target=table_path, mode="append", delta_write_options=delta_write_options
     )
@@ -46,18 +52,23 @@ router_media_radio = KafkaRouter(
 
 async def handle_media_tv_event(event: MediaChannelTvEnvelope):
     logger.info(event)
-    df = pl.from_dict(event.model_dump())
+    data = event.flatten(event.model_dump())
+    df = pl.DataFrame(data)
     df = df.with_columns(pl.all().fill_null("NULL"))
 
     df = df.with_columns(
         occurred_date=pl.from_epoch(
             pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
         ).cast(pl.Date)
+    ).with_columns(
+        monday_of_week=pl.col("occurred_date").map_elements(
+            lambda dt: dt - datetime.timedelta(days=dt.weekday()), return_dtype=pl.Date
+        )
     )
 
     logger.info(df.head())
     table_path = "lakehouse/bronze/media_tv"
-    delta_write_options = {"partition_by": "occurred_date"}
+    delta_write_options = {"partition_by": "monday_of_week"}
     df.write_delta(
         target=table_path, mode="append", delta_write_options=delta_write_options
     )
@@ -77,19 +88,24 @@ router_media_tv = KafkaRouter(
 
 async def handle_sale_event(event: SaleEnvelope):
     logger.info(event)
-    df = pl.from_dict(event.model_dump())
+    data = event.flatten(event.model_dump())
+    df = pl.DataFrame(data)
     df = df.with_columns(pl.all().fill_null("NULL"))
 
     df = df.with_columns(
         occurred_date=pl.from_epoch(
             pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
         ).cast(pl.Date)
+    ).with_columns(
+        monday_of_week=pl.col("occurred_date").map_elements(
+            lambda dt: dt - datetime.timedelta(days=dt.weekday()), return_dtype=pl.Date
+        )
     )
 
     logger.info(df.head())
     table_path = "lakehouse/bronze/sale"
 
-    delta_write_options = {"partition_by": "occurred_date"}
+    delta_write_options = {"partition_by": "monday_of_week"}
     df.write_delta(
         target=table_path, mode="append", delta_write_options=delta_write_options
     )

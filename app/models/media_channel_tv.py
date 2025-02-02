@@ -15,6 +15,8 @@ class MediaChannelTv(BaseModel):
     campaign_name: str
     start_date: datetime.datetime
     media_channel: str = "tv"
+    cost: float
+    currency: str
 
 
 class MediaChannelTvLakehouse(MediaBaseModelLakehouse):

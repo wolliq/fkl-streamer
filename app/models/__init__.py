@@ -61,6 +61,27 @@ class MediaBaseEnvelopeWrapper(BaseModel):
     payload: Self
     prev_payload: Self | None = None
 
+    @staticmethod
+    def flatten(data: dict) -> dict:
+        """
+        Recursively flatten the dictionary and return a flat dict.
+        """
+        flat_dict = {}
+
+        def _flatten(d, parent_key=''):
+            for k, v in d.items():
+                new_key = f"{parent_key}.{k}" if parent_key else k
+                if isinstance(v, dict):  # If the value is another dictionary
+                    _flatten(v, new_key)
+                elif isinstance(v, list):  # If the value is a list (this could also be handled)
+                    for idx, item in enumerate(v):
+                        _flatten(item, f"{new_key}[{idx}]")
+                else:
+                    flat_dict[new_key] = v
+
+        _flatten(data)
+        return flat_dict
+
     class Config:
         arbitrary_types_allowed = True
 
@@ -89,6 +110,27 @@ class SaleBaseEnvelopeWrapper(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+    @staticmethod
+    def flatten(data: dict) -> dict:
+        """
+        Recursively flatten the dictionary and return a flat dict.
+        """
+        flat_dict = {}
+
+        def _flatten(d, parent_key=''):
+            for k, v in d.items():
+                new_key = f"{parent_key}.{k}" if parent_key else k
+                if isinstance(v, dict):  # If the value is another dictionary
+                    _flatten(v, new_key)
+                elif isinstance(v, list):  # If the value is a list (this could also be handled)
+                    for idx, item in enumerate(v):
+                        _flatten(item, f"{new_key}[{idx}]")
+                else:
+                    flat_dict[new_key] = v
+
+        _flatten(data)
+        return flat_dict
 
     @abstractmethod
     def get_current_week_monday(self, *args) -> datetime.date:
