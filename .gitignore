@@ -45,7 +45,6 @@ build/
 # Ignore local configuration
 *.ini
 *.cfg
-*.toml
 
 # ingore data files
 *.parquet
