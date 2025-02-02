@@ -1,8 +1,8 @@
   {
     "event_uuid": "98765-klmno",
-    "event_ts": 1675327338,
+    "event_ts": 1738511979000,
     "event_type": "typeC",
-    "occurred_ts": 1675326338,
+    "occurred_ts": 1738511979000,
     "channel": "tv",
     "request_origin": "desktop-web",
     "payload": {

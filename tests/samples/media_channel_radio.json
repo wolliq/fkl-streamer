@@ -1,8 +1,8 @@
 {
     "event_uuid": "12345-abcde",
-    "event_ts": 1675325138,
+    "event_ts": 1738511979000,
     "event_type": "typeA",
-    "occurred_ts": 1675324138,
+    "occurred_ts": 1738511979000,
     "channel": "tv",
     "request_origin": "web-api",
     "payload": {

@@ -2,8 +2,6 @@ import datetime
 
 from pydantic import BaseModel, field_serializer
 
-from app.models import Currency
-
 
 class MarketingMixModelling(BaseModel):
     """
@@ -27,7 +25,7 @@ class MarketingMixModelling(BaseModel):
     media_channel: str
     cost: float
     sales_amount: float
-    currency: Currency
+    currency: str
     mmm_model: str
 
     @field_serializer("week")

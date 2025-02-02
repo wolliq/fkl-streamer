@@ -1,8 +1,8 @@
 {
   "event_uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "event_ts": 1706870400,
+  "event_ts": 1738511979000,
   "event_type": "sale_event",
-  "occurred_ts": 1706870500,
+  "occurred_ts": 1738511979000,
   "channel": "sale",
   "request_origin": "data-api",
   "payload": {

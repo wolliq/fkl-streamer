@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import polars as pl
@@ -16,10 +17,19 @@ async def handle_media_radio_event(event: MediaChannelRadioEnvelope):
     df = pl.from_dict(event.model_dump())
     df = df.with_columns(pl.all().fill_null("NULL"))
 
+    df = df.with_columns(
+        occurred_date=pl.from_epoch(
+            pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
+        ).cast(pl.Date)
+    )
+
     logger.info(df.head())
     table_path = "lakehouse/bronze/media_radio"
 
-    df.write_delta(target=table_path, mode="append")
+    delta_write_options = {"partition_by": "occurred_date"}
+    df.write_delta(
+        target=table_path, mode="append", delta_write_options=delta_write_options
+    )
 
     logger.info("Delta lake written: media_radio table")
 
@@ -39,10 +49,18 @@ async def handle_media_tv_event(event: MediaChannelTvEnvelope):
     df = pl.from_dict(event.model_dump())
     df = df.with_columns(pl.all().fill_null("NULL"))
 
+    df = df.with_columns(
+        occurred_date=pl.from_epoch(
+            pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
+        ).cast(pl.Date)
+    )
+
     logger.info(df.head())
     table_path = "lakehouse/bronze/media_tv"
-
-    df.write_delta(target=table_path, mode="append")
+    delta_write_options = {"partition_by": "occurred_date"}
+    df.write_delta(
+        target=table_path, mode="append", delta_write_options=delta_write_options
+    )
 
     logger.info("Delta lake written: media_tv table")
 
@@ -62,10 +80,19 @@ async def handle_sale_event(event: SaleEnvelope):
     df = pl.from_dict(event.model_dump())
     df = df.with_columns(pl.all().fill_null("NULL"))
 
+    df = df.with_columns(
+        occurred_date=pl.from_epoch(
+            pl.col("occurred_ts").cast(pl.Int64), time_unit="ms"
+        ).cast(pl.Date)
+    )
+
     logger.info(df.head())
     table_path = "lakehouse/bronze/sale"
 
-    df.write_delta(target=table_path, mode="append")
+    delta_write_options = {"partition_by": "occurred_date"}
+    df.write_delta(
+        target=table_path, mode="append", delta_write_options=delta_write_options
+    )
     logger.info("Delta lake written: sale table")
 
 
