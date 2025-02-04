@@ -12,7 +12,7 @@ def main():
         campaign_name="Summer Vibes",
         sale_amount=250.00,
         currency="EUR",
-        mmm_model="MMM-2024"
+        mmm_model="MMM-2024",
     )
 
     # Create a SaleEnvelope instance
@@ -24,7 +24,7 @@ def main():
         channel="sale",
         request_origin="data-api",
         payload=sale_payload,
-        prev_payload=None
+        prev_payload=None,
     )
 
     # Serialize to binary

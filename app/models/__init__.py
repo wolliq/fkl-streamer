@@ -68,12 +68,14 @@ class MediaBaseEnvelopeWrapper(BaseModel):
         """
         flat_dict = {}
 
-        def _flatten(d, parent_key=''):
+        def _flatten(d, parent_key=""):
             for k, v in d.items():
                 new_key = f"{parent_key}.{k}" if parent_key else k
                 if isinstance(v, dict):  # If the value is another dictionary
                     _flatten(v, new_key)
-                elif isinstance(v, list):  # If the value is a list (this could also be handled)
+                elif isinstance(
+                    v, list
+                ):  # If the value is a list (this could also be handled)
                     for idx, item in enumerate(v):
                         _flatten(item, f"{new_key}[{idx}]")
                 else:
@@ -118,12 +120,14 @@ class SaleBaseEnvelopeWrapper(BaseModel):
         """
         flat_dict = {}
 
-        def _flatten(d, parent_key=''):
+        def _flatten(d, parent_key=""):
             for k, v in d.items():
                 new_key = f"{parent_key}.{k}" if parent_key else k
                 if isinstance(v, dict):  # If the value is another dictionary
                     _flatten(v, new_key)
-                elif isinstance(v, list):  # If the value is a list (this could also be handled)
+                elif isinstance(
+                    v, list
+                ):  # If the value is a list (this could also be handled)
                     for idx, item in enumerate(v):
                         _flatten(item, f"{new_key}[{idx}]")
                 else:
