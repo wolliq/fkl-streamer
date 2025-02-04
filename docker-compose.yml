@@ -17,7 +17,7 @@ services:
 
   fastapi:
     build: .
-    container_name: fastapi-app
+    container_name: fkl-streamer
     depends_on:
       - kafka
     environment:

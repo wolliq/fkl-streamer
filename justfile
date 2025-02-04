@@ -21,9 +21,13 @@ test:
 
 # Run Kafka in a Docker container
 kafka-server:
-    docker run -p 2181:2181 -p 3030:3030 -p 8081-8083:8081-8083 \
-       -p 9581-9585:9581-9585 -p 9092:9092 -e ADV_HOST=127.0.0.1 \
-       lensesio/fast-data-dev:latest
+    docker run -p 2181:2181 \
+      -p 3030:3030 \
+      -p 8081-8083:8081-8083 \
+      -p 9581-9585:9581-9585 \
+      -p 9092:9092 \
+      -e ADV_HOST=127.0.0.1 \
+      lensesio/fast-data-dev:latest
 
 # Add a new topic to Kafka
 kafka-add-topics:
@@ -60,12 +64,18 @@ kafka-consume-sale-test:
     kafka-console-consumer --bootstrap-server localhost:9092 --topic sale-test
 
 build:
-    docker build --no-cache -t fastapi-app .
+    docker build --no-cache -t fkl-streamer .
 run:
-    docker run --env-file .envrc_docker -p 8000:8000 fastapi-app
+    docker run --env-file .envrc_docker -p 8000:8000 fkl-streamer
 run-it:
-    docker run -it fastapi-app /bin/sh
+    docker run -it fkl-streamer /bin/sh
 run-docker-compose:
     docker compose up --build
 log-fastapi:
-    docker logs fastapi-app
+    docker logs fkl-streamer
+
+
+k8s-apply:
+    kubectl apply -f deploy/deployment.yaml
+k8s-port-forward:
+    kubectl port-forward svc/fkl-streamer-app-service 8080:80

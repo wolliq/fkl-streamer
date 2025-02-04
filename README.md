@@ -1,7 +1,8 @@
-# Welcome to FastAPI kafka stream processor
+# Welcome to FastAPI kafka stream processor (fkl-streamer)
 
 This application:
-- consumes data on Kafka server
+- uses FastAPI as base framework to create a data service
+- consumes data from Kafka server topics
 - source it to Delta Lake lakehouse for ML downstream tasks
 
 ## Run the app in local for event production/consumption
@@ -62,3 +63,21 @@ Will join consumed data from Kafka raw events in bronze stage to aggregate in si
 
 ### Gold
 Will model data for feature store and ML downstream tasks.
+
+## Local deployment
+
+Use docker-compose or K8s locally:
+```
+$ just run-docker-compose
+```
+if you want to lanch both kafka and the app, or 
+```
+$ just k8s-apply
+----
+deployment.apps/fkl-streamer-app created
+service/fkl-streamer-app-service created
+
+```
+
+for local app K8s deployment.
+Don't forget to clean up deployments and services afterwords! :)

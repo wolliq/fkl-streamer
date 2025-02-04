@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "fastapi-kafka-stream-proc"
-version = "0.1.0"
-description = ""
+name = "fkl-streamer"
+version = "0.3.0"
+description = "FastAPI streamer from Kafka to Lakehouse on delta lake"
 authors = ["Stefano Lori <wolliq@gmail.com>"]
 readme = "README.md"
 
@@ -17,7 +17,7 @@ fastapi = {extras = ["standard"], version = "^0.115.8"}
 confluent-kafka = "^2.8.0"
 deltalake = "^0.24.0"
 polars = "^1.21.0"
-protobuf = "^5.29.3"
+pandas = "^2.2.3"
 
 
 [build-system]

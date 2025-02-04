@@ -24,7 +24,7 @@ def get_project_root() -> Path:
 
 # join_key_date = pl.date(2025, 1, 27)
 join_key_monday_date = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
-print(join_key_monday_date)
+logging.info(join_key_monday_date)
 
 WRITE_SILVER=True
 
@@ -35,7 +35,6 @@ if WRITE_SILVER:
     # Prepare refined data model on SILVER
     source_path=f"{get_project_root()}/lakehouse/bronze/media_tv"
     dest_path = f"{get_project_root()}/lakehouse/silver/media_tv"
-
 
     (
         pl.read_delta(source_path)
@@ -98,8 +97,6 @@ silver_media_tv = (pl.read_delta(f"{get_project_root()}/lakehouse/silver/media_t
 silver_sale = (pl.read_delta(f"{get_project_root()}/lakehouse/silver/sale")
                    .filter(pl.col("monday_of_week") == join_key_monday_date))
 
-# logger.info(silver_media_radio.select("payload.cost_radio"))
-
 agg_silver_media_radio = silver_media_radio.with_columns(
     sum_cost_radio=pl.sum("cost_radio")
 ).select("monday_of_week", "brand", "sub_brand", "campaign_name", "channel", "sum_cost_radio").unique()
@@ -115,13 +112,13 @@ agg_silver_sale = silver_sale.with_columns(
 ).select("monday_of_week", "brand", "sub_brand", "campaign_name", "channel", "sum_sale_amount", "mmm_model").unique()
 logger.info(agg_silver_sale)
 
-
 joined_media_sale = (
     agg_silver_media_radio
         .join(agg_silver_media_tv, on=["monday_of_week", "brand"])
         .join(agg_silver_sale, on=["monday_of_week", "brand"])
 )
 
+# Write GOLD
 dest_path = f"{get_project_root()}/lakehouse/gold/report_model"
 (
     joined_media_sale

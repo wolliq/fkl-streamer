@@ -18,12 +18,17 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-
 broker = KafkaBroker(
     bootstrap_servers=KAFKA_BROKERS,
     security=SECURITY,
     config=ConfluentConfig(KAFKA_CONFIG),
 )
+
+# broker = KafkaBroker(
+#     bootstrap_servers=KAFKA_BROKERS,
+#     security=SECURITY,
+#     config=ConfluentConfig(KAFKA_CONFIG),
+# )
 
 broker.include_routers(router_media_radio, router_media_tv, router_sale)
 
@@ -42,7 +47,6 @@ class MediaProcessApp(FastAPI):
         super().__init__(*args, **kwargs)
         # self.media_processor_service: MediaProcessService = None
 
-
 @asynccontextmanager
 async def lifespan(_app: MediaProcessApp):
     await broker.start()
@@ -60,3 +64,7 @@ app = MediaProcessApp(
     contact="Me",
     lifespan=lifespan,
 )
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
