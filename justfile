@@ -77,5 +77,6 @@ log-fastapi:
 
 k8s-apply:
     kubectl apply -f deploy/deployment.yaml
+    kubectl apply -f deploy/service.yaml
 k8s-port-forward:
     kubectl port-forward svc/fkl-streamer-app-service 8080:80
